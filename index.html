@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>上网安全教育</title>
+    <style>
+        body {
+            background: #111;
+            color: #fff;
+            text-align: center;
+            padding-top: 80px;
+            font-size: 22px;
+            display: none;
+        }
+        button {
+            margin-top: 40px;
+            padding: 12px 36px;
+            font-size: 20px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h3>安全上网守则</h3>
+        <p>1.不浏览陌生网站</p>
+        <p>2.他人发的网站文件不要点开</p>
+        <p>3.不要听信任何人让你点开任何网页</p>
+        <button onclick="startWrite()">确定</button>
+    </div>
+<script>
+let count = 0;
+const all = 1000;
+const standard = "1.不浏览陌生网站2.他人发的网站文件不要点开3.不要听信任何人让你点开任何网页";
+let finished = false;
+
+// 打开直接进入全屏
+function fullScreen() {
+    const el = document.documentElement;
+    if (el.requestFullscreen) el.requestFullscreen();
+}
+fullScreen();
+
+// 退出全屏自动再次全屏
+document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement && !finished) {
+        fullScreen();
+    }
+});
+
+// 拦截关闭，未完成一直阻拦
+window.onbeforeunload = function(e) {
+    if (!finished) {
+        e.returnValue = '任务未完成，禁止关闭网页！';
+        return '任务未完成，禁止关闭网页！';
+    }
+};
+
+function clickLoop() {
+    if (count < all) {
+        let leave = all - count;
+        if (!confirm(`还需要点击${leave}次，不点击无法继续`)) {
+            clickLoop();
+            return;
+        }
+        count++;
+        clickLoop();
+    } else {
+        document.body.style.display = "block";
+    }
+}
+clickLoop();
+
+function startWrite() {
+    while (true) {
+        let input = prompt("把三条守则完整抄写：");
+        if (input === standard) {
+            alert("全部正确！解除限制");
+            finished = true;
+            if (document.exitFullscreen) document.exitFullscreen();
+            break;
+        } else {
+            alert("文字错误，请重新默写！");
+        }
+    }
+}
+</script>
+</body>
+</html>
